@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raksha Pratibha Sangram Mock Test Environment</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="exam-body">
+    <header class="exam-header">
+        <div class="header-left">
+            <h1 class="exam-title">Raksha Pratibha Sangram CBT Interface</h1>
+        </div>
+        <div class="header-center">
+            <div class="timer-box">
+                <span>Time Remaining:</span>
+                <span id="globalTimer" class="timer-value">00:00:00</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="candidate-info">
+                <div class="candidate-avatar"></div>
+                <div class="candidate-details">
+                    <span id="candidateNameDisplay">John Doe</span>
+                    <span id="candidateRollDisplay" class="candidate-roll">Roll No: 123456</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="exam-container">
+        <!-- Main Form Area -->
+        <main class="exam-main">
+            <!-- Sections Tab -->
+            <div class="sections-container" id="sectionsContainer">
+                <!-- Tabs injected dynamically -->
+            </div>
+            
+            <div class="question-header">
+                <h3>Question <span id="qNumberDisplay">1</span></h3>
+                <span class="instruction-hints" id="markingSchemeDisplay">Single Correct Option (+4, -1)</span>
+            </div>
+
+            <div class="question-content">
+                <div id="questionText" class="question-text">Loading question...</div>
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options injected dynamically -->
+                </div>
+            </div>
+
+            <div class="action-footer">
+                <div class="footer-left">
+                    <button class="btn btn-save-next" id="btnSaveNext">Save & Next</button>
+                    <button class="btn btn-clear" id="btnClear">Clear Response</button>
+                    <button class="btn btn-mark-review" id="btnMarkReview">Save & Mark For Review</button>
+                </div>
+                <div class="footer-right">
+                    <button class="btn btn-submit" id="btnSubmitTest">Submit Section/Test</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar Area -->
+        <aside class="exam-sidebar">
+            <div class="palette-header">
+                <h4>Question Palette</h4>
+            </div>
+            
+            <div class="palette-legend">
+                <div class="legend-item"><div class="bubble status-not_visited"></div>Not Visited</div>
+                <div class="legend-item"><div class="bubble status-not_answered"></div>Not Answered</div>
+                <div class="legend-item"><div class="bubble status-answered"></div>Answered</div>
+                <div class="legend-item"><div class="bubble status-marked"></div>Marked for Review</div>
+                <div class="legend-item"><div class="bubble status-marked_answered"></div>Answered & Marked</div>
+            </div>
+
+            <div class="palette-grid" id="paletteGrid">
+                <!-- Numbers injected dynamically -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Exam Not Started Overlay -->
+    <div class="overlay" id="waitOverlay" style="display: flex;">
+        <div class="overlay-content">
+            <h2>Waiting for Administrator...</h2>
+            <p>The exam will begin shortly once the admin starts the session.</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Exam Ended Overlay -->
+    <div class="overlay" id="endOverlay" style="display: none;">
+        <div class="overlay-content">
+            <h2>Exam Completed!</h2>
+            <p>Your responses have been recorded.</p>
+            <p>Please wait for the admin to declare the results or close the window.</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/exam.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raksha Pratibha Sangram Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6; --bg-color: #f8fafc; --card-bg: #fff;
+            --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; }
+        .admin-header { background: #0f172a; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .admin-title { margin: 0; font-size: 1.25rem; }
+        .controls { display: flex; gap: 1rem; align-items: center; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-start { background: #22c55e; color: #fff; }
+        .btn-stop { background: #ef4444; color: #fff; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        
+        .tabs { background: var(--card-bg); padding: 0 2rem; border-bottom: 1px solid var(--border); display: flex; gap: 2rem; }
+        .tab-btn { background: none; border: none; padding: 1rem 0; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .dashboard-content, .config-content { padding: 2rem; max-width: 1200px; margin: 0 auto; display: none; }
+        .active-content { display: block; }
+        
+        .stats-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+        .stat-card h3 { margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase; }
+        .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f1f5f9; font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem; }
+        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.5rem; }
+        .status-online { background: #22c55e; }
+        .status-offline { background: #ef4444; }
+        .score { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+
+        .config-section { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 2rem; }
+        .config-section h2 { margin-top: 0; font-size: 1.1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { font-size: 0.875rem; font-weight: 600; }
+        .form-group input, .form-group select { padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; }
+        
+        .add-q-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .q-list { max-height: 400px; overflow-y: auto; margin-top: 1rem; }
+        .q-item { padding: 1rem; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.5rem; background: #f8fafc; }
+        .q-item-header { font-weight: 600; margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+        .q-item-body { font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <h1 class="admin-title">Exam Control Panel</h1>
+        <div class="controls">
+            <span id="examStatusDisplay">Exam: STOPPED</span>
+            <button id="toggleExamBtn" class="btn btn-start">Start Exam</button>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">Live Monitor</button>
+        <button class="tab-btn" onclick="switchTab('config')">Test Configuration</button>
+        <button class="tab-btn" onclick="switchTab('teams')">Candidate Authorization</button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboard" class="dashboard-content active-content">
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <div class="value" id="totalStudents">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Online</h3>
+                <div class="value" id="onlineStudents">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Highest Score</h3>
+                <div class="value" id="highestScore">0</div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th><th>Roll Number</th><th>Name</th><th>Attempted</th><th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Config Content -->
+    <div id="config" class="config-content">
+        <div id="configOverlayMsg" style="color: #ef4444; font-weight: bold; margin-bottom: 1rem; display: none;">
+            Cannot modify settings while exam is RUNNING.
+        </div>
+        <div class="config-section">
+            <h2>Global Exam Settings</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Duration (Minutes)</label>
+                    <input type="number" id="confDuration" value="180">
+                </div>
+                <div class="form-group">
+                    <label>Marks for Correct (+)</label>
+                    <input type="number" id="confPosMark" value="4">
+                </div>
+                <div class="form-group">
+                    <label>Marks for Incorrect (-)</label>
+                    <input type="number" id="confNegMark" value="1">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="btnSaveConfig">Save Global Settings</button>
+        </div>
+
+        <div class="config-section">
+            <h2>Add New Question</h2>
+            <div class="form-row">
+                <div class="form-group" style="grid-column: span 3;">
+                    <label>Question Text</label>
+                    <input type="text" id="addQText" placeholder="Enter question">
+                </div>
+                <div class="form-group">
+                    <label>Domain / Section</label>
+                    <input type="text" id="addQSection" placeholder="e.g. Aptitude, History" required>
+                </div>
+                <div class="form-group">
+                    <label>Correct Answer (Option #)</label>
+                    <select id="addQAnswer">
+                        <option value="0">Option 1</option><option value="1">Option 2</option>
+                        <option value="2">Option 3</option><option value="3">Option 4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="add-q-options">
+                <div class="form-group"><label>Option 1</label><input type="text" id="addQOpt0"></div>
+                <div class="form-group"><label>Option 2</label><input type="text" id="addQOpt1"></div>
+                <div class="form-group"><label>Option 3</label><input type="text" id="addQOpt2"></div>
+                <div class="form-group"><label>Option 4</label><input type="text" id="addQOpt3"></div>
+            </div>
+            <button class="btn btn-primary" id="btnAddQuestion" style="margin-top: 1rem;">Add Question</button>
+
+            <h3 style="margin-top: 2rem;">Current Questions List</h3>
+            <div class="q-list" id="questionsListPreview">
+                <!-- Preview injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Teams Content -->
+    <div id="teams" class="config-content">
+        <div class="config-section">
+            <h2>Add Authorized Candidate</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Candidate Name</label>
+                    <input type="text" id="addTeamName" placeholder="Enter Full Name">
+                </div>
+                <div class="form-group">
+                    <label>Roll Number / System ID</label>
+                    <input type="text" id="addTeamRoll" placeholder="Unique ID">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="btnAddTeam">Authorize Candidate</button>
+
+            <h3 style="margin-top: 2rem;">Authorized Candidates List</h3>
+            <table>
+                <thead>
+                    <tr><th>Roll Number</th><th>Candidate Name</th><th>Action</th></tr>
+                </thead>
+                <tbody id="authorizedTeamsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

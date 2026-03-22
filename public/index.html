@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raksha Pratibha Sangram Student Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-header">
+      <h2>Candidate Login</h2>
+      <p>Raksha Pratibha Sangram Online Mock Test Series</p>
+    </div>
+    <form id="loginForm" class="login-form">
+      <div class="form-group">
+        <label for="studentName">Candidate Name</label>
+        <input type="text" id="studentName" placeholder="Enter your full name" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="rollNo">System/Roll Number</label>
+        <input type="text" id="rollNo" placeholder="Enter your roll number" required autocomplete="off">
+      </div>
+      <button type="submit" class="btn-primary">Login to Console</button>
+    </form>
+    <div id="errorMsg" class="error-msg"></div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('studentName').value.trim();
+      const rollNo = document.getElementById('rollNo').value.trim();
+      
+      if (name && rollNo) {
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, rollNo })
+          });
+          const data = await res.json();
+          if (data.success) {
+            sessionStorage.setItem('studentName', name);
+            sessionStorage.setItem('rollNo', rollNo);
+            window.location.href = 'exam.html';
+          } else {
+            document.getElementById('errorMsg').innerText = data.error || "Login Failed.";
+          }
+        } catch(e) {
+          document.getElementById('errorMsg').innerText = "Unable to connect to server.";
+        }
+      } else {
+        document.getElementById('errorMsg').innerText = "Please fill all fields.";
+      }
+    });
+  </script>
+</body>
+</html>
