@@ -175,7 +175,10 @@ app.post('/api/admin/delete-team', (req, res) => {
   const { rollNo } = req.body;
   if (authorizedTeams[rollNo]) {
     delete authorizedTeams[rollNo];
-    // Also disconnect student if active? (Optional)
+  }
+  if (state.students[rollNo]) {
+    delete state.students[rollNo];
+    io.emit('admin_update', Object.values(state.students));
   }
   res.json({ success: true, authorizedTeams });
 });
