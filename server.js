@@ -21,7 +21,8 @@ const state = {
   isExamStarted: false,
   examDuration: config.duration * 60, // in seconds
   examStartTime: null,
-  students: {} // { rollNo: { socketId, name, rollNo, connected, answers: { qId: { option, status } }, score } }
+  students: {}, // { rollNo: { socketId, name, rollNo, connected, answers: { qId: { option, status } }, score } }
+  adminPassword: process.env.ADMIN_PASSWORD || 'admin123'
 };
 
 // Flatten questions for easy lookup & scoring
@@ -80,6 +81,23 @@ app.post('/api/login', (req, res) => {
     res.status(401).json({ error: "Unauthorized. Please ensure Name and Roll No exactly match what the host provided." });
   }
 });
+
+// Admin Auth Login
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  if (password === state.adminPassword) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false, error: "Invalid password" });
+  }
+});
+
+// Middleware for admin routes (optional, but good for cleanliness)
+const adminAuth = (req, res, next) => {
+  // Simple check via header for now, or just let the specific routes handle it if staying simple
+  // For this project, we'll keep it simple and just have the login endpoint for the UI to toggle
+  next();
+};
 
 // Admin endpoints
 app.get('/api/admin/config', (req, res) => {

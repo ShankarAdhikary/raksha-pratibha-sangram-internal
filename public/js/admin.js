@@ -1,5 +1,53 @@
 const socket = io();
 
+// Auth Logic
+const authOverlay = document.getElementById('adminAuthOverlay');
+const loginBtn = document.getElementById('btnAdminLogin');
+const passInput = document.getElementById('adminPassInput');
+const errorMsg = document.getElementById('authErrorMsg');
+
+function checkAuth() {
+    const isAuth = sessionStorage.getItem('adminAuth') === 'true';
+    if (isAuth) {
+        unlockDashboard();
+    }
+}
+
+function unlockDashboard() {
+    authOverlay.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.querySelector('.admin-header').style.visibility = 'visible';
+    document.querySelector('.tabs').style.visibility = 'visible';
+    
+    // Join Admin and Init
+    socket.emit('join_admin');
+    fetchConfig();
+}
+
+loginBtn.addEventListener('click', async () => {
+    const password = passInput.value;
+    try {
+        const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+            sessionStorage.setItem('adminAuth', 'true');
+            unlockDashboard();
+        } else {
+            errorMsg.innerText = data.error || "Login Failed";
+        }
+    } catch (e) {
+        errorMsg.innerText = "Error connecting to server";
+    }
+});
+
+passInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loginBtn.click();
+});
+
 let isExamStarted = false;
 let currentQuestions = {};
 let currentTeams = {};
@@ -12,8 +60,7 @@ function switchTab(tabId) {
     document.getElementById(tabId).classList.add('active-content');
 }
 
-// Join Admin
-socket.emit('join_admin');
+// Removed direct call: socket.emit('join_admin');
 
 socket.on('admin_state', (state) => {
     isExamStarted = state.isExamStarted;
@@ -242,4 +289,4 @@ function renderTeamsManager() {
 }
 
 // Init
-fetchConfig();
+checkAuth();
