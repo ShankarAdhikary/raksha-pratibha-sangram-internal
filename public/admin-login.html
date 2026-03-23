@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Raksha Pratibha Sangram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="login-card">
+    <div class="brand-section" style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.75rem; font-weight: 700;">Admin Console</h2>
+      <p>Secure authentication required</p>
+    </div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="adminPassword">Access Password</label>
+        <input type="password" id="adminPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-submit">Unlock Console</button>
+    </form>
+    
+    <div id="errorMsg"></div>
+    
+    <div style="text-align: center;">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('adminPassword').value;
+      const errorMsg = document.getElementById('errorMsg');
+      
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          sessionStorage.setItem('adminAuthorized', 'true');
+          window.location.href = 'admin.html';
+        } else {
+          errorMsg.innerText = data.error || "Authentication failed.";
+        }
+      } catch(e) {
+        errorMsg.innerText = "Connection error.";
+      }
+    });
+  </script>
+</body>
+</html>

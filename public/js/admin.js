@@ -6,47 +6,31 @@ const loginBtn = document.getElementById('btnAdminLogin');
 const passInput = document.getElementById('adminPassInput');
 const errorMsg = document.getElementById('authErrorMsg');
 
-function checkAuth() {
-    const isAuth = sessionStorage.getItem('adminAuth') === 'true';
+async function checkAuth() {
+    const isAuth = sessionStorage.getItem('adminAuthorized') === 'true';
     if (isAuth) {
         unlockDashboard();
+    } else {
+        window.location.href = 'admin-login.html';
     }
 }
 
 function unlockDashboard() {
-    authOverlay.style.display = 'none';
-    document.body.style.overflow = 'auto';
+    // Show all hidden elements
     document.querySelector('.admin-header').style.visibility = 'visible';
     document.querySelector('.tabs').style.visibility = 'visible';
+    document.body.style.overflow = 'auto';
     
     // Join Admin and Init
     socket.emit('join_admin');
     fetchConfig();
 }
 
-loginBtn.addEventListener('click', async () => {
-    const password = passInput.value;
-    try {
-        const res = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password })
-        });
-        const data = await res.json();
-        if (data.success) {
-            sessionStorage.setItem('adminAuth', 'true');
-            unlockDashboard();
-        } else {
-            errorMsg.innerText = data.error || "Login Failed";
-        }
-    } catch (e) {
-        errorMsg.innerText = "Error connecting to server";
-    }
-});
-
-passInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') loginBtn.click();
-});
+// Admin logout function
+function logout() {
+    sessionStorage.removeItem('adminAuthorized');
+    window.location.href = 'index.html';
+}
 
 let isExamStarted = false;
 let currentQuestions = {};

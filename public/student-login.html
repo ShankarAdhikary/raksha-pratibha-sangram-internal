@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login - Raksha Pratibha Sangram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="login-card">
+    <div class="brand-section" style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.75rem; font-weight: 700;">Student Login</h2>
+      <p>Enter your credentials to start the exam</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="studentName">Full Name</label>
+        <input type="text" id="studentName" placeholder="John Doe" required autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="rollNo">Roll Number / System ID</label>
+        <input type="text" id="rollNo" placeholder="RPS-101" required autocomplete="off">
+      </div>
+      <button type="submit" class="btn-submit">Initialize Exam</button>
+    </form>
+    
+    <div id="errorMsg"></div>
+    
+    <div style="text-align: center;">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('studentName').value.trim();
+      const rollNo = document.getElementById('rollNo').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      
+      if (name && rollNo) {
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, rollNo })
+          });
+          const data = await res.json();
+          if (data.success) {
+            sessionStorage.setItem('studentName', name);
+            sessionStorage.setItem('rollNo', rollNo);
+            window.location.href = 'exam.html';
+          } else {
+            errorMsg.innerText = data.error || "Login Failed.";
+          }
+        } catch(e) {
+          errorMsg.innerText = "Unable to connect to server.";
+        }
+      } else {
+        errorMsg.innerText = "Please fill all fields.";
+      }
+    });
+  </script>
+</body>
+</html>

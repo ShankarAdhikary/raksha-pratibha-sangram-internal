@@ -1,60 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Raksha Pratibha Sangram Student Login</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raksha Pratibha Sangram - Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="login-body">
-  <div class="login-container">
-    <div class="login-header">
-      <h2>Candidate Login</h2>
-      <p>Raksha Pratibha Sangram Online Mock Test Series</p>
-    </div>
-    <form id="loginForm" class="login-form">
-      <div class="form-group">
-        <label for="studentName">Candidate Name</label>
-        <input type="text" id="studentName" placeholder="Enter your full name" required autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label for="rollNo">System/Roll Number</label>
-        <input type="text" id="rollNo" placeholder="Enter your roll number" required autocomplete="off">
-      </div>
-      <button type="submit" class="btn-primary">Login to Console</button>
-    </form>
-    <div id="errorMsg" class="error-msg"></div>
-  </div>
+<body>
+    <div class="landing-container">
+        <div class="brand-section">
+            <h1>Raksha Pratibha Sangram</h1>
+            <p>Smart Quiz & Assessment Management System</p>
+        </div>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('studentName').value.trim();
-      const rollNo = document.getElementById('rollNo').value.trim();
-      
-      if (name && rollNo) {
-        try {
-          const res = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, rollNo })
-          });
-          const data = await res.json();
-          if (data.success) {
-            sessionStorage.setItem('studentName', name);
-            sessionStorage.setItem('rollNo', rollNo);
-            window.location.href = 'exam.html';
-          } else {
-            document.getElementById('errorMsg').innerText = data.error || "Login Failed.";
-          }
-        } catch(e) {
-          document.getElementById('errorMsg').innerText = "Unable to connect to server.";
-        }
-      } else {
-        document.getElementById('errorMsg').innerText = "Please fill all fields.";
-      }
-    });
-  </script>
+        <div class="portal-grid">
+            <a href="student-login.html" class="portal-card">
+                <div class="icon-box">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h2>Student Portal</h2>
+                <p>Access your exam console, check schedules, and participate in live assessments.</p>
+            </a>
+
+            <a href="admin-login.html" class="portal-card">
+                <div class="icon-box">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h2>Admin Console</h2>
+                <p>Manage questions, monitor student progress, and configure exam parameters.</p>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

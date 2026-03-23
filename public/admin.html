@@ -75,21 +75,15 @@
     </style>
 </head>
 <body style="overflow: hidden;">
-    <div id="adminAuthOverlay">
-        <div class="auth-card">
-            <h2>Admin Login</h2>
-            <p style="color: #94a3b8; margin-bottom: 1.5rem;">Raksha Pratibha Sangram Control Panel</p>
-            <input type="password" id="adminPassInput" placeholder="Enter Admin Password">
-            <button class="btn btn-primary" style="width: 100%" id="btnAdminLogin">Unlock Panel</button>
-            <p id="authErrorMsg" style="color: #ef4444; margin-top: 1rem; font-size: 0.875rem;"></p>
-        </div>
-    </div>
-
     <header class="admin-header" style="visibility: hidden;">
-        <h1 class="admin-title">Exam Control Panel</h1>
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <h1 class="admin-title">Exam Control Panel</h1>
+            <a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 0.875rem;"><i class="fas fa-home"></i> Home</a>
+        </div>
         <div class="controls">
             <span id="examStatusDisplay">Exam: STOPPED</span>
             <button id="toggleExamBtn" class="btn btn-start">Start Exam</button>
+            <button onclick="logout()" class="btn btn-stop" style="background: #334155; margin-left: 1rem;">Logout</button>
         </div>
     </header>
 
