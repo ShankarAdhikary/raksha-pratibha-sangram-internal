@@ -164,6 +164,31 @@ document.getElementById('btnAddQuestion').addEventListener('click', async () => 
     } catch (e) { alert('Failed to add question'); }
 });
 
+document.getElementById('btnBulkUpload').addEventListener('click', async () => {
+    const jsonStr = document.getElementById('bulkQJSON').value.trim();
+    if (!jsonStr) return alert("Please paste JSON first.");
+
+    try {
+        const newQuestions = JSON.parse(jsonStr);
+        const res = await fetch('/api/admin/bulk-add-questions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ newQuestions })
+        });
+        const data = await res.json();
+        if (data.success) {
+            currentQuestions = data.questions;
+            renderQuestionsManager();
+            document.getElementById('bulkQJSON').value = '';
+            alert('Bulk Upload Successful!');
+        } else {
+            alert(data.error || "Bulk upload failed");
+        }
+    } catch (e) {
+        alert("Invalid JSON format. Please check your syntax.");
+    }
+});
+
 function renderQuestionsManager() {
     const list = document.getElementById('questionsListPreview');
     list.innerHTML = '';

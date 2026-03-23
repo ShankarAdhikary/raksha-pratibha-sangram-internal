@@ -146,6 +146,23 @@ app.post('/api/admin/delete-question', (req, res) => {
   res.json({ success: true, questions });
 });
 
+app.post('/api/admin/bulk-add-questions', (req, res) => {
+  if (state.isExamStarted) return res.status(400).json({ error: "Cannot add while exam is running" });
+  const { newQuestions } = req.body;
+  if (!newQuestions || typeof newQuestions !== 'object') return res.status(400).json({ error: "Invalid data format" });
+
+  for (const section in newQuestions) {
+    if (!questions[section]) questions[section] = [];
+    newQuestions[section].forEach(q => {
+      if (!q.id) q.id = section.charAt(0).toLowerCase() + (questions[section].length + 1) + Date.now();
+      if (!q.type) q.type = 'mcq';
+      questions[section].push(q);
+    });
+  }
+  buildQuestionsMap();
+  res.json({ success: true, questions });
+});
+
 // Admin Team Endpoints
 app.post('/api/admin/add-team', (req, res) => {
   const { name, rollNo } = req.body;
