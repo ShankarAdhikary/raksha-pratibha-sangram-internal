@@ -22,11 +22,40 @@ body {
     radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
     radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
   color: var(--text-light);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+.logo-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  max-width: 1200px;
+  animation: fadeIn 1s ease-out;
+}
+
+.header-logo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+}
+
+.main-logo {
+  height: 120px;
+}
+
+.edge-logo {
+  height: 100px;
 }
 
 .landing-container {
